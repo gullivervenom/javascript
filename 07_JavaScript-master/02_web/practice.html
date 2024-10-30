@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO-DO LIST</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        #div {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 { text-align: center; color: #343a40; margin-bottom: 20px; }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover { background-color: #0056b3; }
+        ul { list-style-type: none; padding: 0; }
+        li {
+            display: flex; align-items: center;
+            background-color: #f0f0f0; margin: 5px 0;
+            padding: 8px; border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        li:hover { background-color: #e2e6ea; }
+        .delete-btn { margin-left: auto; color: red; font-weight: bold; cursor: pointer; }
+        .checkbox { margin-right: 10px; }
+        .completed { text-decoration: line-through; color: gray; }
+    </style>
+</head>
+<body>
+    <div id="div">
+        <h1>TO-DO LIST</h1>
+        <input type="text" placeholder="할 일을 등록해주세요">
+        <button id="btn">등록하기</button>
+        <ul id="todoList"></ul>
+    </div>
+
+    <script>
+        const $query = document.querySelector('input');
+        const $todoList = document.getElementById('todoList');
+        const $button = document.getElementById('btn');
+
+        const saveTodos = () => {
+            const todos = [...$todoList.children].map(li => ({
+                text: li.querySelector('span').textContent,
+                completed: li.querySelector('.checkbox').checked,
+            }));
+            localStorage.setItem('todos', JSON.stringify(todos));
+        };
+
+        const loadTodos = () => {
+            const todos = JSON.parse(localStorage.getItem('todos')) || [];
+            todos.forEach(({ text, completed }) => {
+                addTodo(text, completed);
+            });
+        };
+
+        const addTodo = (text = $query.value, completed = false) => {
+            if (!text.trim()) return alert('반드시 값을 입력해야 합니다.');
+
+            const li = document.createElement('li');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.classList.add('checkbox');
+            checkbox.checked = completed;
+
+            const span = document.createElement('span');
+            span.textContent = text;
+            if (completed) span.classList.add('completed');
+
+            checkbox.addEventListener('change', () => {
+                span.classList.toggle('completed', checkbox.checked);
+                saveTodos();
+            });
+
+            const deleteBtn = document.createElement('span');
+            deleteBtn.textContent = 'X';
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.onclick = () => {
+                li.remove();
+                saveTodos();
+            };
+
+            li.append(checkbox, span, deleteBtn);
+            $todoList.appendChild(li);
+            $query.value = '';
+            saveTodos();
+        };
+
+        $button.onclick = () => addTodo();
+        $query.addEventListener('keypress', event => { if (event.key === 'Enter') addTodo(); });
+
+        window.onload = loadTodos;
+    </script>
+</body>
+</html>

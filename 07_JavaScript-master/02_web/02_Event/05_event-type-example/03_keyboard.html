@@ -24,9 +24,9 @@
         const $message = document.querySelector('input[type=text]');
         const $area = document.querySelector('.area');
 
-        $message.onkeydown = e => {
-            $area.insertAdjacentHTML('beforeend', 'key=' + e.key + ', code=' + e.code + '<br>')
-        }
+        // $message.onkeydown = e => {
+        //     $area.insertAdjacentHTML('beforeend', 'key=' + e.key + ', code=' + e.code + '<br>')
+        // }
 
         $message.onkeyup = e => {
             $area.insertAdjacentHTML('beforeend', 'key=' + e.key + ', code=' + e.code + '<br>')

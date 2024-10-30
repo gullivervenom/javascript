@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO-DO LIST</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa; /* 배경 색상 */
+            margin: 0;
+            padding: 20px;
+        }
+
+        #div {
+            max-width: 400px; /* 최대 너비 */
+            margin: auto; /* 중앙 정렬 */
+            padding: 20px;
+            background-color: white; /* 배경 색상 */
+            border-radius: 10px; /* 둥근 모서리 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+        }
+
+        h1 {
+            text-align: center; /* 제목 중앙 정렬 */
+            color: #343a40; /* 제목 색상 */
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 22px); /* 전체 너비 설정 (버튼 여백 포함) */
+            padding: 10px; /* 패딩 */
+            border: 1px solid #ced4da; /* 테두리 색상 */
+            border-radius: 5px; /* 둥근 모서리 */
+            margin-bottom: 10px; /* 아래 여백 */
+            font-size: 16px; /* 폰트 크기 */
+        }
+
+        button {
+            width: 100%; /* 버튼 너비 설정 */
+            padding: 10px; /* 패딩 */
+            background-color: #007bff; /* 버튼 배경 색상 */
+            color: white; /* 버튼 텍스트 색상 */
+            border: none; /* 테두리 없음 */
+            border-radius: 5px; /* 둥근 모서리 */
+            font-size: 16px; /* 폰트 크기 */
+            cursor: pointer; /* 커서 변경 */
+            transition: background-color 0.3s; /* 배경 색상 전환 효과 */
+        }
+
+        button:hover {
+            background-color: #0056b3; /* 마우스 오버 시 색상 변화 */
+        }
+
+        ul {
+            list-style-type: none; /* 리스트 스타일 없음 */
+            padding: 0; /* 패딩 없음 */
+        }
+
+        li {
+            display: flex; /* 플렉스 박스 */
+            align-items: center; /* 세로 정렬 */
+            background-color: #f0f0f0; /* 항목 배경 색상 */
+            margin: 5px 0; /* 위 아래 여백 */
+            padding: 8px; /* 패딩 */
+            border-radius: 5px; /* 둥근 모서리 */
+            transition: background-color 0.3s; /* 배경 색상 전환 효과 */
+        }
+
+        li:hover {
+            background-color: #e2e6ea; /* 마우스 오버 시 배경 색상 변화 */
+        }
+
+        .delete-btn {
+            margin-left: auto; /* 오른쪽 끝으로 정렬 */
+            color: red; /* 삭제 버튼 색상 */
+            font-weight: bold; /* 폰트 두께 */
+            cursor: pointer; /* 커서 변경 */
+        }
+
+        .checkbox {
+            margin-right: 10px; /* 체크박스와 텍스트 사이 여백 */
+        }
+
+        .completed {
+            text-decoration: line-through; /* 줄 긋기 */
+            color: gray; /* 색상 변경 */
+        }
+    </style>
+</head>
+<body>
+    <div id="div">
+        <h1>TO-DO LIST</h1>
+        <input type="text" name="query" placeholder="할 일을 등록해주세요"><br>
+        <button id="btn">등록하기</button>
+        <ul id="todoList"></ul> <!-- 할 일 목록이 추가될 부분 -->
+    </div>
+    
+    <script>
+        const $query = document.querySelector('input[name=query]');
+        const $todoList = document.getElementById('todoList');
+        const $button = document.getElementById('btn');
+
+        // 할 일을 추가하는 함수
+        function addTodo() {
+            if ($query.value.trim() === '') {
+                alert('반드시 값을 입력해야 합니다.');
+            } else {
+                const li = document.createElement('li');
+
+                // 체크박스 추가
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.classList.add('checkbox');
+
+                // 입력된 텍스트 추가
+                const text = document.createElement('span');
+                text.textContent = $query.value;
+
+                // 체크박스 클릭 시 완료 스타일 토글
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.checked) {
+                        text.classList.add('completed'); // 텍스트에만 줄이 긋기
+                    } else {
+                        text.classList.remove('completed');
+                    }
+                });
+
+                li.appendChild(checkbox);
+                li.appendChild(text); // 텍스트를 li에 추가
+
+                // 삭제 버튼 추가
+                const deleteBtn = document.createElement('span');
+                deleteBtn.textContent = 'X';
+                deleteBtn.classList.add('delete-btn');
+                deleteBtn.onclick = () => li.remove();
+                li.appendChild(deleteBtn);
+
+                $todoList.appendChild(li);
+                $query.value = ''; // 입력창 비우기
+            }
+        }
+
+        // 버튼 클릭 이벤트 연결
+        $button.onclick = addTodo;
+
+        // 엔터키로 버튼 클릭 실행
+        $query.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                addTodo();
+            }
+        });
+    </script>
+</body>
+</html>
